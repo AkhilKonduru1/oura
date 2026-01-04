@@ -102,7 +102,6 @@ function loadSleepTab() {
         </div>
         
         ${getSleepModelSection()}
-        ${getSleepTimeSection()}
     `;
     
     document.getElementById('tab-content-sleep').innerHTML = html;
@@ -281,12 +280,6 @@ function getSleepModelSection() {
                 <h3 class="text-base font-semibold text-gray-900 mb-4">Average Heart Rate & HRV During Sleep</h3>
                 <div id="sleep-hr-hrv-chart"></div>
             </div>
-
-            <!-- Sleep Details List -->
-            <div class="chart-container">
-                <h3 class="text-base font-semibold text-gray-900 mb-4">Recent Sleep Sessions</h3>
-                <div id="sleep-sessions-list"></div>
-            </div>
         </div>
     `;
 }
@@ -425,57 +418,6 @@ function renderSleepModelCharts() {
     };
     
     Plotly.newPlot('sleep-hr-hrv-chart', [hrTrace, hrvTrace], hrHrvLayout, { responsive: true, displayModeBar: false });
-
-    // Sleep Sessions List
-    const recentSessions = sortedData.slice(-10).reverse();
-    const sessionsList = document.getElementById('sleep-sessions-list');
-    
-    sessionsList.innerHTML = `
-        <div class="space-y-3">
-            ${recentSessions.map(session => `
-                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <div class="font-semibold text-gray-900">${formatDate(session.day)}</div>
-                            <div class="text-sm text-gray-600 mt-1">
-                                ${session.bedtime_start ? formatTime(session.bedtime_start) : 'N/A'} - 
-                                ${session.bedtime_end ? formatTime(session.bedtime_end) : 'N/A'}
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm font-medium text-blue-600">${session.efficiency || 0}% efficient</div>
-                            <div class="text-xs text-gray-500">${((session.total_sleep_duration || 0) / 3600).toFixed(1)}h total</div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-sm">
-                        <div>
-                            <span class="text-gray-600">Deep:</span>
-                            <span class="ml-1 font-medium text-blue-600">${((session.deep_sleep_duration || 0) / 3600).toFixed(1)}h</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">REM:</span>
-                            <span class="ml-1 font-medium text-purple-600">${((session.rem_sleep_duration || 0) / 3600).toFixed(1)}h</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Light:</span>
-                            <span class="ml-1 font-medium text-cyan-600">${((session.light_sleep_duration || 0) / 3600).toFixed(1)}h</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Awake:</span>
-                            <span class="ml-1 font-medium text-red-600">${((session.awake_time || 0) / 3600).toFixed(1)}h</span>
-                        </div>
-                    </div>
-                    ${session.average_heart_rate ? `
-                        <div class="mt-2 text-sm text-gray-600">
-                            ❤️ ${session.average_heart_rate.toFixed(1)} bpm avg | 
-                            ${session.lowest_heart_rate || 'N/A'} bpm lowest
-                            ${session.average_hrv ? ` | 📊 ${session.average_hrv.toFixed(0)} ms HRV` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('')}
-        </div>
-    `;
 }
 
 function formatTime(timeStr) {
@@ -488,113 +430,3 @@ function formatTime(timeStr) {
     }
 }
 
-// ====== Sleep Time Recommendations Functions ======
-function getSleepTimeSection() {
-    if (!currentSleepTimeData || currentSleepTimeData.length === 0) {
-        return '';
-    }
-
-    const recommendations = currentSleepTimeData
-        .filter(d => d.day)
-        .sort((a, b) => new Date(b.day) - new Date(a.day));
-
-    const statusColors = {
-        'not_enough_nights': 'bg-gray-100 text-gray-700',
-        'only_recommended_found': 'bg-blue-100 text-blue-700',
-        'optimal_bedtime_available': 'bg-green-100 text-green-700'
-    };
-
-    const recommendationText = {
-        'earlier_bedtime': '🌙 Try going to bed earlier',
-        'later_bedtime': '☀️ You can go to bed later',
-        'optimal_timing': '✅ Your bedtime is optimal',
-        '': 'No specific recommendation'
-    };
-
-    return `
-        <div class="space-y-6 mt-6">
-            <!-- Sleep Time Header -->
-            <div class="chart-container">
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Sleep Time Recommendations History</h3>
-                <p class="text-sm text-gray-600">Daily bedtime advice from your Oura Ring</p>
-            </div>
-
-            <!-- Recommendations List -->
-            <div class="chart-container">
-                <div class="space-y-4">
-                    ${recommendations.slice(0, 10).map(rec => `
-                        <div class="border-l-4 ${getRecommendationColor(rec.recommendation)} bg-gray-50 p-4 rounded-r-lg">
-                            <div class="flex justify-between items-start">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3">
-                                        <span class="text-sm font-semibold text-gray-900">${formatDateFull(rec.day)}</span>
-                                        <span class="px-2 py-1 text-xs rounded ${statusColors[rec.status] || 'bg-gray-100 text-gray-700'}">
-                                            ${formatStatus(rec.status)}
-                                        </span>
-                                    </div>
-                                    <div class="mt-2 space-y-1">
-                                        ${rec.recommendation ? `
-                                            <p class="text-sm text-gray-700">
-                                                <strong>Advice:</strong> ${recommendationText[rec.recommendation] || rec.recommendation}
-                                            </p>
-                                        ` : ''}
-                                        ${rec.optimal_bedtime ? `
-                                            <p class="text-sm text-gray-700">
-                                                <strong>Optimal Bedtime:</strong> ${formatTime(rec.optimal_bedtime)}
-                                            </p>
-                                        ` : '<p class="text-sm text-gray-500 italic">Insufficient data for bedtime recommendation</p>'}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- Summary Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="chart-container">
-                    <div class="text-2xl font-bold text-gray-900">${recommendations.length}</div>
-                    <div class="text-sm text-gray-600">Total Days Tracked</div>
-                </div>
-                <div class="chart-container">
-                    <div class="text-2xl font-bold text-green-600">${recommendations.filter(r => r.optimal_bedtime).length}</div>
-                    <div class="text-sm text-gray-600">Days with Optimal Time</div>
-                </div>
-                <div class="chart-container">
-                    <div class="text-2xl font-bold text-blue-600">${recommendations.filter(r => r.recommendation).length}</div>
-                    <div class="text-sm text-gray-600">Days with Advice</div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function getRecommendationColor(recommendation) {
-    const colors = {
-        'earlier_bedtime': 'border-blue-500',
-        'later_bedtime': 'border-orange-500',
-        'optimal_timing': 'border-green-500',
-        '': 'border-gray-300'
-    };
-    return colors[recommendation] || 'border-gray-300';
-}
-
-function formatStatus(status) {
-    const statusMap = {
-        'not_enough_nights': 'Not Enough Data',
-        'only_recommended_found': 'Recommendation Only',
-        'optimal_bedtime_available': 'Optimal Time Available'
-    };
-    return statusMap[status] || status;
-}
-
-function formatDateFull(dateStr) {
-    if (!dateStr) return 'N/A';
-    try {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-    } catch (e) {
-        return dateStr;
-    }
-}

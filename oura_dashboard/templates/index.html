@@ -106,35 +106,314 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 transition-all duration-300">
         <div class="container-main">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center space-x-3">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <h1 class="text-lg font-semibold text-gray-900 tracking-tight">
-                        Oura Ring Analytics
-                    </h1>
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold text-gray-900 tracking-tight">Oura Ring Analytics</span>
                 </div>
+
+                <!-- CTA -->
                 <div class="flex items-center space-x-4">
                     <div id="files-badge" class="hidden px-3 py-1.5 bg-blue-50 rounded-md text-sm font-medium text-blue-700 border border-blue-200">
                         <span id="files-count">0</span> files
                     </div>
-                    <input type="file" id="file-input" multiple accept=".csv" class="hidden">
-                    <button onclick="document.getElementById('file-input').click()" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-150 flex items-center space-x-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                        </svg>
-                        <span>Upload Oura Data</span>
+                    <button id="upload-data-btn" onclick="document.getElementById('upload-section').scrollIntoView({behavior: 'smooth'})" 
+                            class="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-all shadow-sm hover:shadow-md">
+                        Upload Data
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- AI Summary Section -->
+    <!-- Landing Page Content -->
+    <div id="landing-page">
+        <!-- Hero Section -->
+        <section class="relative pt-16 pb-24 overflow-hidden">
+            <div class="container-main">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="text-center lg:text-left z-10">
+                        <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
+                            Visualize your <span class="text-blue-600">Oura Ring</span> data with powerful insights
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            Upload your Oura export CSVs to unlock rich interactive charts, deep sleep analysis, and AI-powered health summaries—completely free, private, and secure.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button onclick="document.getElementById('upload-section').scrollIntoView({behavior: 'smooth'})" 
+                                    class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-xl text-base font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30 flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                </svg>
+                                <span>Upload Your Oura Data</span>
+                            </button>
+                            <a href="https://github.com/AkhilKonduru1/oura" target="_blank"
+                               class="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-xl text-base font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                <span>View GitHub Repo</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Oura Ring Image -->
+                    <div class="relative hidden lg:block">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full blur-3xl opacity-50"></div>
+                        <div class="relative transform hover:scale-105 transition-transform duration-500">
+                            <img src="{{ url_for('static', filename='OR4_Gold.png') }}" alt="Oura Ring" class="w-full h-auto max-w-md mx-auto drop-shadow-2xl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is this -->
+        <section class="py-20 bg-white border-y border-gray-100">
+            <div class="container-main max-w-4xl text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-12">Why use this dashboard?</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100">
+                        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Completely Free</h3>
+                        <p class="text-gray-600 text-sm">No monthly subscriptions. Get detailed analytics and insights without paying a dime.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        </div>
+                        <p class="text-gray-600 text-sm">Transparent code. Contribute features, fix bugs, or host it yourself. Community driven.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Private & Secure</h3>
+                        <p class="text-gray-600 text-sm">Your data is processed locally or securely in session. No accounts, no tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section id="how-it-works" class="py-20 bg-gray-50">
+            <div class="container-main">
+                <div class="text-center mb-16">
+                    <p class="text-gray-600 max-w-2xl mx-auto">Follow these simple steps to export your data from Oura Cloud.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-4 gap-6">
+                    <!-- Step 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
+                        <div class="absolute -top-4 left-6 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                        <div class="mt-4">
+                            <h3 class="font-semibold text-gray-900 mb-2">Go to Oura Cloud</h3>
+                            <p class="text-sm text-gray-600 mb-4">Visit cloud.ouraring.com and sign in.</p>
+                            <a href="https://cloud.ouraring.com" target="_blank" class="text-blue-600 text-sm font-medium hover:underline">Visit Site &rarr;</a>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
+                        <div class="absolute -top-4 left-6 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                        <div class="mt-4">
+                            <h3 class="font-semibold text-gray-900 mb-2">Account Settings</h3>
+                            <p class="text-sm text-gray-600">Click your profile icon and select "Account Settings".</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
+                        <div class="absolute -top-4 left-6 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                        <div class="mt-4">
+                            <h3 class="font-semibold text-gray-900 mb-2">Export Data</h3>
+                            <p class="text-sm text-gray-600">Find "Data Export" and click "Download Data Archive".</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative">
+                        <div class="absolute -top-4 left-6 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm">4</div>
+                        <div class="mt-4">
+                            <h3 class="font-semibold text-gray-900 mb-2">Unzip & Upload</h3>
+                            <p class="text-sm text-gray-600">Extract the ZIP file and upload the CSVs below.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <div class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                        Note: Data export generation may take a few minutes.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload-section" class="py-24 bg-white">
+            <div class="container-main max-w-3xl">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Ready to visualize your data?</h2>
+                    <p class="text-gray-600">Upload your Oura CSV files to generate your dashboard instantly.</p>
+                </div>
+                
+                <div id="upload-drop-zone" class="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer group">
+                    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Drag & Drop your CSV files here</h3>
+                    <p class="text-gray-500 mb-8">or click to browse from your computer</p>
+                    <button onclick="document.getElementById('file-input').click()" 
+                            class="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md">
+                        Select CSV Files
+                    </button>
+                    <p class="text-xs text-gray-400 mt-6">Supported files: sleep.csv, activity.csv, readiness.csv, etc.</p>
+                </div>
+                
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div>
+                        <div class="font-semibold text-gray-900 mb-1">1. Parse</div>
+                        <p class="text-sm text-gray-500">We process your CSVs locally.</p>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900 mb-1">2. Visualize</div>
+                        <p class="text-sm text-gray-500">Interactive charts are generated.</p>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900 mb-1">3. Analyze</div>
+                        <p class="text-sm text-gray-500">AI provides health insights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="features" class="py-20 bg-gray-50">
+            <div class="container-main">
+                <div class="text-center mb-16">
+                    <p class="text-gray-600">Comprehensive analytics for every aspect of your health.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Sleep Analysis</h3>
+                        <p class="text-gray-600 text-sm">Deep dive into your sleep stages, efficiency, and latency trends over time.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Readiness Scores</h3>
+                        <p class="text-gray-600 text-sm">Track your daily readiness and recovery to optimize your training.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-red-100 text-red-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Heart Health</h3>
+                        <p class="text-gray-600 text-sm">Visualize HRV and resting heart rate patterns to monitor stress.</p>
+                    </div>
+                    <!-- Feature 4 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">AI Insights</h3>
+                        <p class="text-gray-600 text-sm">Get personalized summaries and recommendations powered by AI.</p>
+                    </div>
+                    <!-- Feature 5 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Long-term Trends</h3>
+                        <p class="text-gray-600 text-sm">See how your health metrics evolve over weeks, months, and years.</p>
+                    </div>
+                    <!-- Feature 6 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">CSV Export</h3>
+                        <p class="text-gray-600 text-sm">Your data remains yours. Easy import and processing of standard Oura exports.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="py-20 bg-white border-t border-gray-100">
+            <div class="container-main max-w-3xl">
+                <div class="text-center mb-12">
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-6 py-4 text-left bg-gray-50 hover:bg-gray-100 flex justify-between items-center font-medium text-gray-900 focus:outline-none" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                            <span>Is this an official Oura app?</span>
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 py-4 bg-white text-gray-600 text-sm leading-relaxed">
+                            No, this is a community-built, open-source project. It is not affiliated with Oura Health Oy. It is designed to help users visualize their own data.
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-6 py-4 text-left bg-gray-50 hover:bg-gray-100 flex justify-between items-center font-medium text-gray-900 focus:outline-none" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                            <span>Is my data safe?</span>
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 py-4 bg-white text-gray-600 text-sm leading-relaxed">
+                            Yes. Your data is processed in your browser session or temporarily on the server for analysis and is not stored permanently. We do not create accounts or track your personal information.
+                        </div>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-6 py-4 text-left bg-gray-50 hover:bg-gray-100 flex justify-between items-center font-medium text-gray-900 focus:outline-none" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                            <span>Do I need an Oura subscription?</span>
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 py-4 bg-white text-gray-600 text-sm leading-relaxed">
+                            No! This dashboard works with the data export available to all Oura users, regardless of subscription status.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-12">
+            <div class="container-main">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <span class="text-xl font-bold tracking-tight">Oura Ring Analytics</span>
+                        <p class="text-gray-400 text-sm mt-2">Open source health visualization dashboard.</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="https://github.com/AkhilKonduru1/oura" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy</a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 mt-8 pt-8 text-center md:text-left text-sm text-gray-500">
+                    <p>&copy; 2024 Oura Ring Analytics. Not affiliated with Oura Health.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- AI Summary Section (Hidden initially) -->
     <div id="ai-summary" class="hidden bg-blue-50 border-b border-blue-100">
         <div class="container-main py-6">
             <div class="flex items-start space-x-4">
@@ -151,7 +430,7 @@
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Content (Hidden initially) -->
     <main id="main-content" class="container-main py-6 hidden">
         <!-- Uploaded Files Section -->
         <div id="uploaded-files-section" class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
@@ -208,89 +487,8 @@
         <div id="tab-content-cardiovascular" class="tab-content hidden"></div>
     </main>
 
-    <!-- Empty State -->
-    <div id="empty-state" class="container-main py-12">
-        <div class="max-w-4xl mx-auto">
-            <!-- Hero Section -->
-            <div class="text-center mb-12">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 mb-6 shadow-lg">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                </div>
-                <h1 class="text-4xl font-bold text-gray-900 mb-4">Oura Ring Analytics Dashboard</h1>
-                <p class="text-xl text-gray-600 mb-3 max-w-2xl mx-auto">Visualize your health data with interactive charts and AI-powered insights</p>
-            </div>
-
-            <!-- What is this -->
-            <div class="bg-white border border-gray-200 rounded-xl p-8 mb-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">What is this?</h2>
-                <p class="text-gray-600 mb-4 leading-relaxed">
-                    This is a free, open-source analytics dashboard for your Oura Ring data. Unlike the official Oura app which requires a monthly subscription for detailed insights, 
-                    this tool lets you visualize and analyze all your health metrics completely free.
-                </p>
-            </div>
-
-            <!-- How to get your data -->
-            <div class="bg-white border border-gray-200 rounded-xl p-8 mb-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">How to Get Your Oura Data</h2>
-                <div class="space-y-4">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 font-semibold text-blue-600 text-sm">1</div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900 mb-1">Go to Oura on the Web</p>
-                            <p class="text-sm text-gray-600">Visit <a href="https://cloud.ouraring.com" target="_blank" class="text-blue-600 hover:text-blue-700 underline">cloud.ouraring.com</a> and sign in with your Oura account</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-4">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 font-semibold text-blue-600 text-sm">2</div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900 mb-1">Access Your Settings</p>
-                            <p class="text-sm text-gray-600">Click on your profile icon in the top right, then select "Account Settings"</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-4">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 font-semibold text-blue-600 text-sm">3</div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900 mb-1">Download Your Data</p>
-                            <p class="text-sm text-gray-600">Scroll to "Data Export" section and click "Download Data Archive". You'll receive a ZIP file with all your CSV files</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-4">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 font-semibold text-blue-600 text-sm">4</div>
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900 mb-1">Extract and Upload</p>
-                            <p class="text-sm text-gray-600">Unzip the downloaded file and upload all CSV files using the button below</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div class="flex items-start space-x-3">
-                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                        <div>
-                            <p class="font-medium text-blue-900 text-sm mb-1">Note about data processing time</p>
-                            <p class="text-xs text-blue-700">The data export can take a few minutes to generate. Oura will send you an email when it's ready to download.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CTA Button -->
-            <div class="text-center">
-                <button onclick="document.getElementById('file-input').click()" 
-                        class="px-8 py-4 bg-blue-600 text-white rounded-lg text-base font-semibold hover:bg-blue-700 transition-colors duration-150 inline-flex items-center space-x-3 shadow-lg hover:shadow-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                    </svg>
-                    <span>Upload Your Oura Data</span>
-                </button>
-                <p class="text-xs text-gray-500 mt-4">hi</p>
-            </div>
-        </div>
-    </div>
+    <!-- Hidden File Input -->
+    <input type="file" id="file-input" multiple accept=".csv" class="hidden">
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -387,6 +585,18 @@
             </svg>
         </button>
     </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/sleep.js') }}"></script>

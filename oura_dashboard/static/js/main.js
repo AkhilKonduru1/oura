@@ -51,9 +51,7 @@ function updateFilesList(files) {
 }
 
 // File upload handler
-document.getElementById('file-input').addEventListener('change', async (e) => {
-    const files = e.target.files;
-    
+async function handleFiles(files) {
     if (files.length === 0) {
         showNotification('No Files Selected', 'Please select at least one CSV file to upload.', 'info');
         return;
@@ -110,8 +108,29 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
             document.getElementById('ai-summary-text').textContent = result.summary;
             document.getElementById('ai-summary').classList.remove('hidden');
             
+            // Hide navigation links and upload button
+            const desktopNav = document.getElementById('desktop-nav');
+            if (desktopNav) desktopNav.classList.add('hidden');
+            
+            const uploadBtn = document.getElementById('upload-data-btn');
+            if (uploadBtn) uploadBtn.classList.add('hidden');
+            
+            // Hide mobile menu links
+            const mobileLinks = document.querySelectorAll('#mobile-menu a');
+            mobileLinks.forEach(link => link.classList.add('hidden'));
+            
+            // Hide mobile menu upload button
+            const mobileUploadBtn = document.querySelector('#mobile-menu button');
+            if (mobileUploadBtn) mobileUploadBtn.classList.add('hidden');
+
             // Show main content
-            document.getElementById('empty-state').classList.add('hidden');
+            const landingPage = document.getElementById('landing-page');
+            if (landingPage) landingPage.classList.add('hidden');
+            
+            // Fallback for legacy ID if needed, or just remove if we are sure
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) emptyState.classList.add('hidden');
+
             document.getElementById('main-content').classList.remove('hidden');
             
             hideLoading();
@@ -129,10 +148,55 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
         showNotification('Upload Failed', error.message || 'An error occurred while uploading your files. Please try again.', 'error');
         console.error('Upload error:', error);
     }
-    
+}
+
+document.getElementById('file-input').addEventListener('change', (e) => {
+    handleFiles(e.target.files);
     // Reset file input
     e.target.value = '';
 });
+
+// Drag and Drop Support
+function setupDragAndDrop() {
+    const dropZone = document.getElementById('upload-drop-zone');
+    if (!dropZone) return;
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('border-blue-500', 'bg-blue-50');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    }
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+}
+
+// Initialize drag and drop when DOM is loaded
+document.addEventListener('DOMContentLoaded', setupDragAndDrop);
 
 // Tab switching
 function switchTab(tabName) {
