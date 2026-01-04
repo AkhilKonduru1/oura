@@ -121,26 +121,49 @@ function loadActivityTab() {
     
     document.getElementById('tab-content-activity').innerHTML = html;
     
-    Plotly.newPlot('steps-chart', [stepsTrace], stepsLayout, config);
-    Plotly.newPlot('calories-chart', [calTrace1, calTrace2], calLayout, config);
-    
-    // Add click handler to steps chart
-    document.getElementById('steps-chart').on('plotly_click', function(data) {
-        const clickedDate = data.points[0].x;
-        const selectedDay = currentActivityData.find(d => d.day === clickedDate);
-        if (selectedDay) {
-            loadActivityDetails(selectedDay);
-        }
-    });
-    
-    // Add click handler to calories chart
-    document.getElementById('calories-chart').on('plotly_click', function(data) {
-        const clickedDate = data.points[0].x;
-        const selectedDay = currentActivityData.find(d => d.day === clickedDate);
-        if (selectedDay) {
-            loadActivityDetails(selectedDay);
-        }
-    });
+    // Use setTimeout to ensure DOM is ready and container is visible
+    setTimeout(() => {
+        Plotly.newPlot('steps-chart', [stepsTrace], stepsLayout, config);
+        Plotly.newPlot('calories-chart', [calTrace1, calTrace2], calLayout, config);
+        
+        // Add click handler to steps chart
+        document.getElementById('steps-chart').on('plotly_click', function(data) {
+            let clickedDate = data.points[0].x;
+            // Normalize date to YYYY-MM-DD format and add 1 day to fix timezone offset
+            let dateObj;
+            if (clickedDate instanceof Date) {
+                dateObj = new Date(clickedDate);
+            } else {
+                dateObj = new Date(clickedDate);
+            }
+            dateObj.setDate(dateObj.getDate() + 1);
+            clickedDate = dateObj.toISOString().split('T')[0];
+            
+            const selectedDay = currentActivityData.find(d => d.day === clickedDate);
+            if (selectedDay) {
+                loadActivityDetails(selectedDay);
+            }
+        });
+        
+        // Add click handler to calories chart
+        document.getElementById('calories-chart').on('plotly_click', function(data) {
+            let clickedDate = data.points[0].x;
+            // Normalize date to YYYY-MM-DD format and add 1 day to fix timezone offset
+            let dateObj;
+            if (clickedDate instanceof Date) {
+                dateObj = new Date(clickedDate);
+            } else {
+                dateObj = new Date(clickedDate);
+            }
+            dateObj.setDate(dateObj.getDate() + 1);
+            clickedDate = dateObj.toISOString().split('T')[0];
+            
+            const selectedDay = currentActivityData.find(d => d.day === clickedDate);
+            if (selectedDay) {
+                loadActivityDetails(selectedDay);
+            }
+        });
+    }, 100);
     
     // Add time range change handler
     document.getElementById('activity-time-range').addEventListener('change', (e) => {

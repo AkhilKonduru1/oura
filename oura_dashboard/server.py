@@ -137,7 +137,6 @@ def generate_ai_summary(data):
             readiness_scores = [d.get('score') for d in readiness_data if d.get('score') is not None]
             avg_readiness = safe_mean(readiness_scores)
             summary_text += f"Readiness: Average score {avg_readiness:.1f}\n"
-            summary_text += f"Readiness: Average score {avg_readiness:.1f}\n"
         
         if not summary_text.strip() or summary_text == "Health Data Summary:\n\n":
             return "Your health data has been uploaded successfully! Explore the tabs to view detailed insights."
@@ -163,6 +162,108 @@ def generate_ai_summary(data):
     except Exception as e:
         print(f"AI Summary Error: {str(e)}")
         return "Your health data has been uploaded successfully! Explore the tabs below to view detailed insights and trends."
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.json
+        user_message = data.get('message', '')
+        user_data = data.get('data', {})
+        
+        if not user_message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        # Prepare context from user's health data
+        context = "User's Health Data Summary:\n"
+        
+        if user_data:
+            # Sleep data
+            if 'dailysleep.csv' in user_data:
+                sleep_data = user_data['dailysleep.csv']
+                if sleep_data:
+                    sleep_scores = [d.get('score') for d in sleep_data if d.get('score')]
+                    if sleep_scores:
+                        context += f"- Sleep: {len(sleep_data)} nights, avg score {safe_mean(sleep_scores):.1f}\n"
+                        context += f"  Latest: {sleep_data[-1].get('day')} - Score: {sleep_data[-1].get('score')}\n"
+            
+            # Activity data
+            if 'dailyactivity.csv' in user_data:
+                activity_data = user_data['dailyactivity.csv']
+                if activity_data:
+                    steps = [d.get('steps') for d in activity_data if d.get('steps')]
+                    calories = [d.get('total_calories') for d in activity_data if d.get('total_calories')]
+                    if steps:
+                        context += f"- Activity: {len(activity_data)} days, avg {safe_mean(steps):.0f} steps, {safe_mean(calories):.0f} calories\n"
+                        context += f"  Latest: {activity_data[-1].get('day')} - {activity_data[-1].get('steps')} steps\n"
+            
+            # Readiness data
+            if 'dailyreadiness.csv' in user_data:
+                readiness_data = user_data['dailyreadiness.csv']
+                if readiness_data:
+                    readiness_scores = [d.get('score') for d in readiness_data if d.get('score')]
+                    if readiness_scores:
+                        context += f"- Readiness: avg score {safe_mean(readiness_scores):.1f}\n"
+                        context += f"  Latest: {readiness_data[-1].get('day')} - Score: {readiness_data[-1].get('score')}\n"
+            
+            # Stress data
+            if 'dailystress.csv' in user_data:
+                stress_data = user_data['dailystress.csv']
+                if stress_data:
+                    recent_stress = [d for d in stress_data if d.get('day_summary')][-5:] if stress_data else []
+                    if recent_stress:
+                        context += f"- Stress: Recent days - {', '.join([d.get('day_summary', 'N/A') for d in recent_stress])}\n"
+            
+            # SpO2 data
+            if 'dailyspo2.csv' in user_data:
+                spo2_data = user_data['dailyspo2.csv']
+                if spo2_data:
+                    context += f"- SpO2: {len(spo2_data)} measurements tracked\n"
+            
+            # Heart rate data
+            if 'heartrate.csv' in user_data:
+                hr_data = user_data['heartrate.csv']
+                if hr_data:
+                    bpms = [d.get('bpm') for d in hr_data if d.get('bpm')]
+                    if bpms:
+                        context += f"- Heart Rate: {len(hr_data)} measurements, avg {safe_mean(bpms):.0f} bpm\n"
+        
+        # Create chat completion with user context
+        system_message = """You are a helpful health and wellness assistant for Oura Ring users. Your role is to:
+        - Answer questions about the user's specific health data with personalized insights
+        - Explain health metrics (sleep score, HRV, readiness, activity, stress, recovery, SpO2, etc.)
+        - Provide science-based lifestyle advice for improving health metrics
+        - Answer questions about the dashboard features
+        - Give actionable tips for better sleep, stress management, and overall wellness
+        
+        When the user has uploaded data, use their specific numbers in your responses. Keep responses concise (2-4 sentences), friendly, and evidence-based. If asked about medical concerns, remind users to consult healthcare professionals."""
+        
+        if context.strip() != "User's Health Data Summary:":
+            system_message += f"\n\n{context}"
+        
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_message
+                },
+                {
+                    "role": "user",
+                    "content": user_message
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+            temperature=0.7,
+            max_tokens=250
+        )
+        
+        response = chat_completion.choices[0].message.content
+        return jsonify({'response': response})
+        
+    except Exception as e:
+        print(f"Chat Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': 'Failed to get response. Please try again.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

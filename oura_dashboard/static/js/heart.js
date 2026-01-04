@@ -92,18 +92,20 @@ function loadHeartTab() {
     if (currentStressData.length > 0) {
         const stressTrace1 = {
             x: currentStressData.map(d => d.day),
-            y: currentStressData.map(d => d.stress_high),
+            y: currentStressData.map(d => d.stress_high / 3600), // Convert seconds to hours
             type: 'bar',
             name: 'Stress',
-            marker: { color: '#f59e0b' }
+            marker: { color: '#f59e0b' },
+            hovertemplate: '<b>%{x}</b><br>Stress: %{y:.1f} hours<extra></extra>'
         };
         
         const stressTrace2 = {
             x: currentStressData.map(d => d.day),
-            y: currentStressData.map(d => d.recovery_high),
+            y: currentStressData.map(d => d.recovery_high / 3600), // Convert seconds to hours
             type: 'bar',
             name: 'Recovery',
-            marker: { color: '#10b981' }
+            marker: { color: '#10b981' },
+            hovertemplate: '<b>%{x}</b><br>Recovery: %{y:.1f} hours<extra></extra>'
         };
         
         const stressLayout = {
@@ -114,7 +116,7 @@ function loadHeartTab() {
                 xanchor: 'left'
             },
             xaxis: { title: '', gridcolor: '#f3f4f6', showgrid: false, zeroline: false },
-            yaxis: { title: 'Minutes', gridcolor: '#f3f4f6', zeroline: false },
+            yaxis: { title: 'Hours', gridcolor: '#f3f4f6', zeroline: false },
             barmode: 'group',
             paper_bgcolor: 'white',
             plot_bgcolor: 'white',

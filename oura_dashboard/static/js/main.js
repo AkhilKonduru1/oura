@@ -165,6 +165,15 @@ function switchTab(tabName) {
         case 'metrics':
             loadMetricsTab();
             break;
+        case 'temperature':
+            loadTemperatureData();
+            break;
+        case 'session':
+            loadSessionData();
+            break;
+        case 'cardiovascular':
+            loadCardiovascularData();
+            break;
     }
 }
 
